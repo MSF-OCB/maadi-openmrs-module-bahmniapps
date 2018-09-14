@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('bahmni.appointments')
-    .controller('AppointmentsDayCalendarController', ['$scope', '$rootScope', '$state', 'uiCalendarConfig', 'appService', 'calendarViewPopUp', 'checkinPopUp',
-        function ($scope, $rootScope, $state, uiCalendarConfig, appService, calendarViewPopUp, checkinPopUp) {
+    .controller('AppointmentsWeekCalendarController', ['$scope', '$rootScope', '$state', 'uiCalendarConfig', 'appService', 'calendarViewPopUp', 'checkinPopUp', 'spinner', 'appointmentsService', 'appointmentsFilter',
+        function ($scope, $rootScope, $state, uiCalendarConfig, appService, calendarViewPopUp, checkinPopUp, spinner, appointmentsService, appointmentsFilter) {
             $scope.eventSources = [];
             var init = function () {
                 $scope.events = $scope.appointments.events;
@@ -20,7 +20,7 @@ angular.module('bahmni.appointments')
                             appointments: event.appointments,
                             checkinAppointment: checkinAppointment,
                             enableCreateAppointment: isSelectable(),
-                            weekView: false
+                            weekView: true
                         },
                         className: "ngdialog-theme-default delete-program-popup app-dialog-container"
                     });
@@ -56,7 +56,7 @@ angular.module('bahmni.appointments')
                 };
 
                 function isOwnAppointmentUserPrivilegedToCreateAppointment (privilege, provider) {
-                    var NO_PROVIDER_UUID = 'no-provider-uuid';
+                    const NO_PROVIDER_UUID = 'no-provider-uuid';
                     return (privilege.name === Bahmni.Appointments.Constants.privilegeOwnAppointments &&
                         (provider.uuid === NO_PROVIDER_UUID || provider.uuid === $rootScope.currentProvider.uuid));
                 }
@@ -92,14 +92,12 @@ angular.module('bahmni.appointments')
                         defaultDate: $scope.date,
                         header: false,
                         timezone: 'local',
-                        defaultView: 'agendaDay',
-                        resources: $scope.appointments.resources,
+                        defaultView: 'agendaWeek',
                         businessHours: {
                             start: appService.getAppDescriptor().getConfigValue('startOfDay') || Bahmni.Appointments.Constants.defaultCalendarStartTime,
                             end: appService.getAppDescriptor().getConfigValue('endOfDay') || Bahmni.Appointments.Constants.defaultCalendarEndTime
                         },
                         scrollTime: appService.getAppDescriptor().getConfigValue('startOfDay') || Bahmni.Appointments.Constants.defaultCalendarStartTime,
-                        groupByResource: true,
                         selectable: isSelectable(),
                         select: $scope.createAppointment,
                         slotLabelInterval: appService.getAppDescriptor().getConfigValue('calendarSlotLabelInterval') || Bahmni.Appointments.Constants.defaultCalendarSlotLabelInterval,
@@ -125,7 +123,6 @@ angular.module('bahmni.appointments')
                 if (!_.isEmpty($scope.appointments.events)) {
                     $scope.eventSources.push($scope.appointments.events);
                 }
-                $scope.uiConfig.calendar.resources = $scope.appointments.resources;
             };
 
             $scope.$watch("appointments", function (newValue, oldValue) {
@@ -135,3 +132,4 @@ angular.module('bahmni.appointments')
             });
             init();
         }]);
+

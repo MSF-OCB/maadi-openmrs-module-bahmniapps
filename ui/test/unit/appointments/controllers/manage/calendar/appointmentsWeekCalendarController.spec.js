@@ -1,6 +1,6 @@
 'use strict';
 
-describe('AppointmentsDayCalendarController', function () {
+describe('AppointmentsWeekCalendarController', function () {
     var element,controller, scope, rootScope, appService, appDescriptor, $compile, httpBackend, $state, calendarViewPopUp;
 
     beforeEach(function () {
@@ -31,7 +31,7 @@ describe('AppointmentsDayCalendarController', function () {
 
     var createController = function () {
         createElement();
-        controller('AppointmentsDayCalendarController', {
+        controller('AppointmentsWeekCalendarController', {
             $scope: scope,
             $rootScope: rootScope,
             appService: appService,
@@ -165,7 +165,7 @@ describe('AppointmentsDayCalendarController', function () {
         var event = {appointments: []};
         scope.alertOnEventClick(event);
         expect(calendarViewPopUp).toHaveBeenCalledWith({
-            scope : { appointments : event.appointments, checkinAppointment : jasmine.any(Function), enableCreateAppointment : true, weekView: false },
+            scope : { appointments : event.appointments, checkinAppointment : jasmine.any(Function), enableCreateAppointment : true, weekView: true },
             className: "ngdialog-theme-default delete-program-popup app-dialog-container"
         });
     });
@@ -176,7 +176,7 @@ describe('AppointmentsDayCalendarController', function () {
         var event = {appointments: []};
         scope.alertOnEventClick(event);
         expect(calendarViewPopUp).toHaveBeenCalledWith({
-            scope : { appointments : event.appointments, checkinAppointment : jasmine.any(Function), enableCreateAppointment : true, weekView: false },
+            scope : { appointments : event.appointments, checkinAppointment : jasmine.any(Function), enableCreateAppointment : true, weekView: true },
             className: "ngdialog-theme-default delete-program-popup app-dialog-container"
         });
     });
@@ -187,26 +187,18 @@ describe('AppointmentsDayCalendarController', function () {
         var event = {appointments: []};
         scope.alertOnEventClick(event);
         expect(calendarViewPopUp).toHaveBeenCalledWith({
-            scope : { appointments : event.appointments, checkinAppointment : jasmine.any(Function), enableCreateAppointment : false, weekView: false },
+            scope : { appointments : event.appointments, checkinAppointment : jasmine.any(Function), enableCreateAppointment : false, weekView: true },
             className: "ngdialog-theme-default delete-program-popup app-dialog-container"
         });
     });
 
-    it('should reset the event and resources when appointments has been changed', function () {
-        var startDateTime = moment();
-        var endDateTime = moment().add(30, 'minutes');
-        var resource = {id: 'Superman', title: 'Superman', provider: {name: "Superman", uuid: "7d162c29-3f12-11e4-adec-0800271c1b75"}};
-        var appointment =  {startDateTime: startDateTime, endDateTime: endDateTime, provider: resource.provider};
+    it('should reset the event when appointments has been changed', function () {
         createController();
         scope.appointments ={};
-        scope.uiConfig.calendar.resources = [{id: 'Jane', title: 'Jane'},
-            {id: 'Austen', title: 'Austen'}];
         scope.$digest();
-
         var event = { appointmentKind:"Scheduled",  title: "new patient(GAN203007)"};
         scope.appointments = {events: [event], resources: [{id: 'Jane', title: 'Jane'}]};
         scope.$digest();
-        expect(scope.uiConfig.calendar.resources).toEqual(scope.appointments.resources);
         expect(scope.eventSources).toEqual([scope.appointments.events]);
 
     })
