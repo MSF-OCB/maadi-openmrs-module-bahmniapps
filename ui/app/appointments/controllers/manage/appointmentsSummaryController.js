@@ -11,7 +11,7 @@ angular.module('bahmni.appointments')
                     || Bahmni.Appointments.Constants.defaultWeekStartDay;
             };
 
-            $scope.getAppointmentsSummaryForAWeek = function (startDate, endDate) {$scope.viewDate.calendar
+            $scope.getAppointmentsSummaryForAWeek = function (startDate, endDate) {
                 $scope.weekStartDate = startDate;
                 $scope.weekEndDate = endDate;
                 var params = {
